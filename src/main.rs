@@ -11,5 +11,5 @@ fn main() {
     let root = KuhnPokerHistory::new();
     root.get_info_set();
 
-    train(root, 5);
+    train(root, 1);
 }
