@@ -9,7 +9,7 @@ fn main() {
     println!("Hello, world!");
 
     let root = KuhnPokerHistory::new();
-    root.get_info_set();
+    println!("{:?}", root.get_info_set());
 
     train(root, 1);
 }
