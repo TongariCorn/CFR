@@ -43,12 +43,13 @@ impl History for KuhnPokerHistory {
 
     fn get_info_set(&self) -> KuhnPokerHistory {
         let mut info = *self;
+        info.board = 0;
         if info.current_player == 1 {
             info.player_states[1].0 = 0;
         } else {
             info.player_states[0].0 = 0;
         }
-        return info
+        return info;
     }
 
     fn new_strategy() -> Strategy<KuhnPokerHistory> {
@@ -56,8 +57,12 @@ impl History for KuhnPokerHistory {
         let root = KuhnPokerHistory::new();
 
         fn dfs(h: KuhnPokerHistory, str: &mut Strategy<KuhnPokerHistory>) {
-            if h.is_terminal() { return }
-            if h.get_current_player() != 0 { str.add_node(h.get_info_set(), h.get_action_num()) };
+            if h.is_terminal() {
+                return;
+            }
+            if h.get_current_player() != 0 {
+                str.add_node(h.get_info_set(), h.get_action_num())
+            };
             for act in 0..h.get_action_num() {
                 let next_h = h.take_action(act);
                 dfs(next_h, str);
@@ -65,7 +70,7 @@ impl History for KuhnPokerHistory {
         }
         dfs(root, &mut str);
 
-        return str
+        return str;
     }
 
     fn is_terminal(&self) -> bool {

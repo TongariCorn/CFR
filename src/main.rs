@@ -11,5 +11,8 @@ fn main() {
     let root = KuhnPokerHistory::new();
     println!("{:?}", root.get_info_set());
 
-    train(root, 1);
+    let mut strategy = KuhnPokerHistory::new_strategy();
+    train(root, &mut strategy, 500);
+
+    println!("yeah");
 }

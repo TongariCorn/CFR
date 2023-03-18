@@ -1,5 +1,5 @@
-use std::hash::Hash;
 use crate::cfr::strategy::Strategy;
+use std::hash::Hash;
 
 pub trait History {
     type Info: Eq + Hash + Copy;
