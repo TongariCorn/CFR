@@ -77,7 +77,6 @@ where
     H: History<Info = I>,
     I: Eq + Hash + Copy,
 {
-
     for i in 0..round {
         for target_player in 1..root.get_player_num() {
             cfr(&root, strategy, target_player, 1.0, 1.0);

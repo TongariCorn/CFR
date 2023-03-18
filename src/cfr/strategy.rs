@@ -1,7 +1,9 @@
+extern crate rand;
+
+use rand::Rng;
 use std::cell::{RefCell, RefMut};
 use std::collections::HashMap;
 use std::hash::Hash;
-use std::cmp;
 
 // StrategyNode encapsulates the following three quantities:
 // 1. \sigma^t: strategy at rount t
@@ -45,22 +47,28 @@ impl StrategyNode {
         self.unnormalized_avg_strategy[act] += pi_i * prob;
         self.updated = true;
     }
-    
+
     pub fn add_imm_cfr(&mut self, act: usize, r: f32) {
         self.regret[act] += r;
     }
-    
+
     pub fn accum_avg_strategy(&mut self, act: usize, pi_i: f32, prob: f32) {
         self.unnormalized_avg_strategy[act] += pi_i * prob;
         self.updated = true;
     }
-    
+
     fn regret_matching(&mut self) {
-        if !self.updated { return }
+        if !self.updated {
+            return;
+        }
 
         let mut normalizing_sum = 0.0;
         for act in 0..self.regret.len() {
-            self.dist[act] = if self.regret[act] > 0.0 { self.regret[act] } else { 0.0 };
+            self.dist[act] = if self.regret[act] > 0.0 {
+                self.regret[act]
+            } else {
+                0.0
+            };
             normalizing_sum += self.dist[act];
         }
 
@@ -81,6 +89,20 @@ impl StrategyNode {
         for act in 0..self.unnormalized_avg_strategy.len() {
             self.avg_strategy[act] = self.unnormalized_avg_strategy[act] / normalizing_sum;
         }
+    }
+
+    fn sample_avg_strategy(&self) -> usize {
+        let mut rng = rand::thread_rng();
+        let sample = rng.gen::<f64>();
+
+        let mut accum_p = 0.0;
+        for act in 0..self.avg_strategy.len() {
+            accum_p += self.avg_strategy[act];
+            if sample <= (accum_p as f64) {
+                return act;
+            }
+        }
+        return self.avg_strategy.len() - 1;
     }
 }
 
@@ -124,5 +146,14 @@ impl<Info: Eq + Hash + Copy> Strategy<Info> {
         for (_, v) in self.nodes.iter_mut() {
             v.borrow_mut().calc_average_strategy();
         }
+    }
+
+    pub fn sample_avg_strategy(&self, info: Info) -> usize {
+        return self
+            .nodes
+            .get(&info)
+            .unwrap()
+            .borrow()
+            .sample_avg_strategy();
     }
 }

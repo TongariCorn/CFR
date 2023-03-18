@@ -38,6 +38,57 @@ impl KuhnPokerHistory {
     }
 }
 
+impl KuhnPokerHistory {
+    pub fn print_playable_text(&self, player: usize) {
+        let mut opt_text: [String; 2] = [String::new(), String::new()];
+        for i in 0..2 {
+            opt_text[i] = match self.player_states[i].1 {
+                Opt::CALL => String::from("call"),
+                Opt::FOLD => String::from("fold"),
+                Opt::BET => String::from("bet"),
+                Opt::CHECK => String::from("check"),
+                Opt::NULL => String::from(""),
+            }
+        }
+        let opponent = if player == 1 { 1 } else { 0 };
+        let player = player - 1;
+        if self.is_terminal() {
+            println!(
+                "You: {}({}), Opponent: {}({}), Board: {}",
+                self.player_states[player].0,
+                opt_text[player],
+                self.player_states[opponent].0,
+                opt_text[opponent],
+                self.board
+            );
+        } else {
+            println!(
+                "You: {}({}), Opponent: --({}), Board: --",
+                self.player_states[player].0, opt_text[player], opt_text[opponent]
+            );
+        }
+    }
+
+    pub fn get_playable_actions_text(&self) -> String {
+        if self.is_terminal() {
+            return String::from("")
+        }
+
+        let next_opt = match self.turn {
+            0 => String::from("cards are not dealt yet (0~5)"),
+            1 => String::from("Pcheck(0) or bet(1)"),
+            2 => match self.player_states[0].1 {
+                Opt::CHECK => String::from("check(0) or bet(1)"),
+                _ => String::from("fold(0) or call(1)"),
+            },
+            3 => String::from("fold(0) or call(1)"),
+            _ => String::new(),
+        };
+
+        return next_opt
+    }
+}
+
 impl History for KuhnPokerHistory {
     type Info = KuhnPokerHistory;
 
