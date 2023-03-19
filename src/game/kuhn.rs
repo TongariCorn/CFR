@@ -39,7 +39,7 @@ impl KuhnPokerHistory {
 }
 
 impl KuhnPokerHistory {
-    pub fn print_playable_text(&self, player: usize) {
+    pub fn get_info_text(&self, player: usize) -> String {
         let mut opt_text: [String; 2] = [String::new(), String::new()];
         for i in 0..2 {
             opt_text[i] = match self.player_states[i].1 {
@@ -53,30 +53,67 @@ impl KuhnPokerHistory {
         let opponent = if player == 1 { 1 } else { 0 };
         let player = player - 1;
         if self.is_terminal() {
-            println!(
-                "You: {}({}), Opponent: {}({}), Board: {}",
+            return String::from(format!(
+                "    You: {}({}), Opponent: {}({}), Board: {}",
                 self.player_states[player].0,
                 opt_text[player],
                 self.player_states[opponent].0,
                 opt_text[opponent],
                 self.board
-            );
+            ));
         } else {
-            println!(
-                "You: {}({}), Opponent: --({}), Board: --",
+            return String::from(format!(
+                "    You: {}({}), Opponent: --({}), Board: --",
                 self.player_states[player].0, opt_text[player], opt_text[opponent]
-            );
+            ));
         }
+    }
+
+    pub fn get_action_as_text(&self, act: usize) -> String {
+        let str = match self.turn {
+            1 => {
+                if act == 0 {
+                    "Check"
+                } else {
+                    "Bet"
+                }
+            }
+            2 => match self.player_states[0].1 {
+                Opt::CHECK => {
+                    if act == 0 {
+                        "Check"
+                    } else {
+                        "Bet"
+                    }
+                }
+                _ => {
+                    if act == 0 {
+                        "Fold"
+                    } else {
+                        "Call"
+                    }
+                }
+            },
+            3 => {
+                if act == 0 {
+                    "Fold"
+                } else {
+                    "Call"
+                }
+            }
+            _ => "",
+        };
+        return String::from(str);
     }
 
     pub fn get_playable_actions_text(&self) -> String {
         if self.is_terminal() {
-            return String::from("")
+            return String::from("");
         }
 
         let next_opt = match self.turn {
             0 => String::from("cards are not dealt yet (0~5)"),
-            1 => String::from("Pcheck(0) or bet(1)"),
+            1 => String::from("check(0) or bet(1)"),
             2 => match self.player_states[0].1 {
                 Opt::CHECK => String::from("check(0) or bet(1)"),
                 _ => String::from("fold(0) or call(1)"),
@@ -85,7 +122,7 @@ impl KuhnPokerHistory {
             _ => String::new(),
         };
 
-        return next_opt
+        return next_opt;
     }
 }
 

@@ -8,29 +8,22 @@ use cfr::trainer::train;
 use game::kuhn::*;
 
 fn main() {
-    println!("Hello, world!");
-
     let root = KuhnPokerHistory::new();
-    println!("{:?}", root.get_info_set());
 
     let mut strategy = KuhnPokerHistory::new_strategy();
     train(root, &mut strategy, 500);
 
     let mut h = Box::new(KuhnPokerHistory::new());
 
-    println!("Which player would you like to play?: First(1)/Second(2)");
-    let mut ans = String::new();
-    io::stdin().read_line(&mut ans);
-    let p: usize = ans.trim().parse().ok().unwrap();
-    let player = if p == 1 { 1 } else { 2 };
-    let opponent = if player == 1 { 2 } else { 1 };
+    let mut player = 1;
+    let mut opponent = 2;
+    let mut game_iter = 1;
+
+    println!("===Game{}===   You play first.", game_iter);
 
     let mut results = [0.0; 2];
     loop {
         let current_player = h.get_current_player();
-        if current_player == opponent {
-            println!("# Opponent's turn:")
-        }
 
         let act = match current_player {
             0 => {
@@ -39,7 +32,10 @@ fn main() {
             }
             _ => {
                 if current_player == player {
-                    println!("# Your turn, choose an action: {}", h.get_playable_actions_text());
+                    println!(
+                        "# Your turn, choose an action: {}",
+                        h.get_playable_actions_text()
+                    );
 
                     let mut ans = String::new();
                     io::stdin().read_line(&mut ans);
@@ -47,28 +43,46 @@ fn main() {
 
                     act
                 } else {
-                    strategy.sample_avg_strategy(h.get_info_set())
+                    let act = strategy.sample_avg_strategy(h.get_info_set());
+                    println!("# Opponent's turn: {}", h.get_action_as_text(act));
+
+                    act
                 }
             }
         };
 
         h = Box::new(h.take_action(act));
 
-        h.print_playable_text(player);
+        println!("{}", h.get_info_text(player));
 
         if h.is_terminal() {
             println!("The game is over.");
 
-            results[player - 1] += h.get_utility(player);
-            results[opponent - 1] += h.get_utility(opponent);
+            results[0] += h.get_utility(player);
+            results[1] += h.get_utility(opponent);
             println!(
                 "Result --- You:{}({}) / Opponent:{}({})\n",
-                results[player - 1],
+                results[0],
                 h.get_utility(player),
-                results[opponent - 1],
+                results[1],
                 h.get_utility(opponent)
             );
+
+            // New game
             h = Box::new(KuhnPokerHistory::new());
+            game_iter += 1;
+            let temp = player;
+            player = opponent;
+            opponent = temp;
+            println!(
+                "===Game{}===   {} first.",
+                game_iter,
+                if player == 1 {
+                    "You play"
+                } else {
+                    "The opponent plays"
+                }
+            );
         }
     }
 }
