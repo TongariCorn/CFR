@@ -6,7 +6,7 @@ CounterFactual Regret(CFR) minimization algorithm implemented in Rust, and Kuhn 
 - https://ja.wikipedia.org/wiki/クーン・ポーカー
 
 # Papers
-- [Imperfect-Information Games via Discounted Regret Minimization](https://arxiv.org/abs/1809.04040Solving)
+- [Imperfect-Information Games via Discounted Regret Minimization](https://arxiv.org/abs/1809.04040)
 序盤のCFRはこれを使った方が効率よく学習できる
 
 - [Monte Carlo Sampling for Regret Minimization in Extensive Games](https://papers.nips.cc/paper/3713-monte-carlo-sampling-for-regret-minimization-in-extensive-games)
