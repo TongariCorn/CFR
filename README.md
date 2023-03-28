@@ -18,3 +18,5 @@ Brownさんが2016 annual computer poker competitionで優勝したモデル
 - [Depth-Limited Solving for Imperfect-Information Games](https://papers.nips.cc/paper/2018/hash/34306d99c63613fad5b2a140398c0420-Abstract.html)
 - [Endgame Solving in Large Imperfect-Information Games](https://www.cs.cmu.edu/~sandholm/Endgame_AAAI15_workshop_cr_1.pdf)
 - [Abstraction for Solving Large Incomplete-Information Games](https://www.cs.cmu.edu/~sandholm/game%20abstraction.aaai15SMT.pdf)
+- [Heads-up Limit Hold’em Poker is Solved](https://webdocs.cs.ualberta.ca/~bowling/papers/15science.pdf)
+- [Safe and Nested Subgame Solving for Imperfect-Information Games](https://papers.nips.cc/paper/2018/hash/34306d99c63613fad5b2a140398c0420-Abstract.html)
